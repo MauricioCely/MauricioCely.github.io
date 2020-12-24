@@ -1,0 +1,1371 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Iván Mauricio Cely Toro">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="This is a brief description of the Monte Carlo method to estimate $\pi$">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#06805E">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+    
+      
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+    
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-173461490-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-173461490-1', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu028d12a5677323d314b5a5abc52e9454_58229_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu028d12a5677323d314b5a5abc52e9454_58229_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@Mauricio_Cely">
+  <meta property="twitter:creator" content="@Mauricio_Cely">
+  
+  <meta property="og:site_name" content="Ctrl &#43; Shift &#43; M">
+  <meta property="og:url" content="https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/">
+  <meta property="og:title" content="Estimating $\pi$ using the Monte Carlo Method. | Ctrl &#43; Shift &#43; M">
+  <meta property="og:description" content="This is a brief description of the Monte Carlo method to estimate $\pi$"><meta property="og:image" content="https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/featured.jpeg">
+  <meta property="twitter:image" content="https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/featured.jpeg"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-08-05T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-08-05T12:16:55-03:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Estimating $\pi$ using the Monte Carlo Method. | Ctrl &#43; Shift &#43; M</title>
+
+</head>
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+  
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/"><img src="/images/logo_hu028d12a5677323d314b5a5abc52e9454_58229_0x70_resize_lanczos_2.png" style="display:inline;" alt="Ctrl &#43; Shift &#43; M"> <span style='padding-left: 10px;' >Ctrl &#43; Shift &#43; M</span></a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/"><img src="/images/logo_hu028d12a5677323d314b5a5abc52e9454_58229_0x70_resize_lanczos_2.png" alt="Ctrl &#43; Shift &#43; M"></a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#hero"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/blog/"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#gallery"><span>Gallery</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://github.com/mauriciocely" target="_blank" rel="noopener"><span><i style='font-size: 18px;' class='fab fa-github'></i></span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://twitter.com/Mauricio_Cely" target="_blank" rel="noopener"><span><i style='font-size: 18px;' class='fab fa-twitter'></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+
+<div class="article-container pt-3">
+  <h1>Estimating $\pi$ using the Monte Carlo Method.</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+    Aug 5, 2020
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/maths/">Maths</a>, <a href="/category/science/">Science</a>, <a href="/category/r/">R</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="https://twitter.com/Mauricio_Cely" target="_blank" rel="noopener">
+    <i class="fab fa-twitter mr-1"></i>
+    Follow
+  </a>
+
+
+</div>
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 558px;">
+  <div style="position: relative">
+    <img src="/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/featured_hu6c9df222617c9d30f19dab0425d90ffc_302904_720x0_resize_q100_lanczos.jpeg" alt="Animation of sine and cosine functions." class="featured-image">
+    <span class="article-header-caption">Image credit: <a href="http://www.gettyimages.es/detail/460592881"><strong>Getty Images</strong></a></span>
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="index_files/accessible-code-block/empty-anchor.js"></script>
+<link href="index_files/vembedr/css/vembedr.css" rel="stylesheet" />
+<script src="index_files/kePrint/kePrint.js"></script>
+<link href="index_files/lightable/lightable.css" rel="stylesheet" />
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#monte-carlo-method">Monte Carlo method</a></li>
+<li><a href="#simulations-1-000-000-million-points">Simulations: 1 000 000 million points</a></li>
+<li><a href="#animations-code">Animations code</a></li>
+</ul>
+</div>
+
+<p>I always asked myself how the scientist have achieved a precise definition for this constant, I guess measuring the circumference with a string and dividing by its diameter is not the easiest way. For this reason in this post I want to show one of the multiples methods to estimate <span class="math inline">\(\pi\)</span>, that using some animations made with <code>ggplot</code> and <code>gganimate</code>.</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>We all know that the symbol used by mathematicians to represent the ratio of a circle’s circumference to its diameter is the lowercase Greek letter <span class="math inline">\(\pi\)</span>.</p>
+<span class="math display">\[\pi =\frac{C}{d}\]</span>
+<div class="figure" style="text-align: center"><span id="fig:piratio"></span>
+<img src="Pi_ratio.svg" alt="The constant $\pi$ is defined as the ratio between the circunference to its diamater. *Source: [Wikipedia](https://en.wikipedia.org/wiki/File:Pi_eq_C_over_d.svg)*." width="300px" />
+<p class="caption">
+Figure 1: The constant <span class="math inline">\(\pi\)</span> is defined as the ratio between the circunference to its diamater. <em>Source: <a href="https://en.wikipedia.org/wiki/File:Pi_eq_C_over_d.svg">Wikipedia</a></em>.
+</p>
+</div>
+<p>This ratio is constant, regardless of the circle’s size. <strong>pi</strong> is perhaps the most famous of the irrational numbers, which means it can not be expressed as a common fraction converting it in an incommensurable number whose digits never settles into a permanently repeating pattern and appear to be randomly distributed.</p>
+<p>Nowadays <a href="https://www.npr.org/2019/03/14/703566696/the-woman-who-calculated-31-trillion-digits-of-pi">31 trillon digits</a> of <span class="math inline">\(\pi\)</span> are known, but do we need really this level of accuracy? NASA indeed has answered this question in a very interesting article I recommend you <a href="https://www.jpl.nasa.gov/edu/news/2016/3/16/how-many-decimals-of-pi-do-we-really-need/"><em>How Many Decimals of Pi Do We Really Need?</em></a>.</p>
+</div>
+<div id="monte-carlo-method" class="section level1">
+<h1>Monte Carlo method</h1>
+<p>Monte Carlo methods are a subset of computational algorithms that use the process of repeated random sampling to make numerical estimations of unknown parameters. To estimate <span class="math inline">\(\pi\)</span> the method consists of drawing on a canvas a square with an inner circle. As we know the area of the circle is <span class="math inline">\(A_{\bigcirc} = \pi r^2\)</span>, and the area of the square is <span class="math inline">\(A_{\square} = (2r)^2 = 4r^2\)</span>, see Figure <a href="#fig:squarecircle">2</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:squarecircle"></span>
+<img src="square_circle_ratio.png" alt="Circle and square areas." width="70%" />
+<p class="caption">
+Figure 2: Circle and square areas.
+</p>
+</div>
+<p>As shown below dividing the area of the circle, by the area of the square we get <span class="math inline">\(\pi /4\)</span>.</p>
+<p><span class="math display">\[\frac{A_{\bigcirc}}{A_{\square}} = \frac{\pi \cancel{r^2}}{4 \cancel{r^2}} \Rightarrow \boxed{\pi = 4 \frac{A_{\bigcirc}}{A_{\square}}}\]</span>
+If a large number of random points inside the square is generated and the quantity of points inside the circle is counted.
+We can use the following ratio to estimate Pi:</p>
+<p><span class="math display">\[
+\pi \approx 4 \frac{\text{number of points in the circle}}{\text{total number of points}}
+\]</span>
+If you haven’t understand the process yet the following video gives a very clear and didactic explanation about it, this will help you for sure.</p>
+<div class="vembedr embed-responsive embed-responsive-16by9" align="center">
+<div>
+<iframe src="https://www.youtube.com/embed/ELetCV_wX_c" width="533" height="300" frameborder="0" allowfullscreen="" class="embed-responsive-item"></iframe>
+</div>
+</div>
+</div>
+<div id="simulations-1-000-000-million-points" class="section level1">
+<h1>Simulations: 1 000 000 million points</h1>
+<p>To estimate <span class="math inline">\(\pi\)</span> we are going to plot randomly points using the <code>runif()</code> function and then count how many of them are inside the circle. The canvas in this case is the <em>x-y</em> plane, a square of side 2 units and an inner circle of radius 1 are plotted centered in the origin <span class="math inline">\((0,0)\)</span>. The number of points inside the circle satisfies the condition <span class="math inline">\(\sqrt{x^{2}+y^{2}} \leq r\)</span>, where <span class="math inline">\(r\)</span> has to be 1 in our case, the radius of the unit circle. The idea now is to estimate <span class="math inline">\(\pi\)</span> as increasing the number of points, in the code below if the point falls inside the circle was assigned <span class="math inline">\(1\)</span> otherwise it is <span class="math inline">\(0\)</span>.</p>
+<p>In figure <a href="#fig:facet-points">3</a>, <span class="math inline">\(\pi\)</span> is estimated for 6 different simulations with different sample size to assess how the estimates vary.</p>
+<div class="figure" style="text-align: center"><span id="fig:facet-points"></span>
+<img src="powers-of-ten.png" alt="Estimation of $\pi$ for different point quantities. Points are randomly scattered inside the square, some fall within the unit circle." width="80%" />
+<p class="caption">
+Figure 3: Estimation of <span class="math inline">\(\pi\)</span> for different point quantities. Points are randomly scattered inside the square, some fall within the unit circle.
+</p>
+</div>
+<p>Results for some values of <span class="math inline">\(\pi\)</span> are shown in the Table <a href="#tab:table-pi">1</a>.</p>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:table-pi">Table 1: </span>Some values of <span class="math inline">\(\pi\)</span> estimated using numerical simulations.
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Number of points
+</th>
+<th style="text-align:center;">
+Estimation of <span class="math inline">\(\pi\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+10
+</td>
+<td style="text-align:center;">
+3.200000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+100
+</td>
+<td style="text-align:center;">
+3.280000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1000
+</td>
+<td style="text-align:center;">
+3.192000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+10000
+</td>
+<td style="text-align:center;">
+3.121600
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+100000
+</td>
+<td style="text-align:center;">
+3.144520
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1000000
+</td>
+<td style="text-align:center;">
+3.141972
+</td>
+</tr>
+</tbody>
+</table>
+<p>Figure <a href="#fig:simulation-animation">4</a> represents the same results shown previously but as an animation, this allow us to understand better the how pi accuracy increases as the sample size do same.</p>
+<div class="figure" style="text-align: center"><span id="fig:simulation-animation"></span>
+<img src="animation_canvas.gif" alt="Numerical approximation of $\pi$." width="80%" />
+<p class="caption">
+Figure 4: Numerical approximation of <span class="math inline">\(\pi\)</span>.
+</p>
+</div>
+<p>Figure below show <code>R</code> pi constant value as an horizontal <span style="color:red">red</span> line. It is seen the convergence to the constant pi is related with the sample size. A sample size of 1,000,000 is used for this simulation.</p>
+<div class="figure" style="text-align: center"><span id="fig:approx-animation"></span>
+<img src="approx_pi.gif" alt="Estimation of $\pi$ by sample size. The value is better as the sample points increases." width="80%" />
+<p class="caption">
+Figure 5: Estimation of <span class="math inline">\(\pi\)</span> by sample size. The value is better as the sample points increases.
+</p>
+</div>
+<blockquote>
+<p>⚠️ <strong>NOTE</strong>: For the curious people in <code>R</code> the <span class="math inline">\(\pi\)</span> number is defined by default up to 48 digits.</p>
+<p><strong>3.141592653589793115997963468544185161590576171875</strong></p>
+</blockquote>
+<p>I hope this short post had been helpful to you. If you have any opinion, suggestion or critic all comments are received, please write me.</p>
+<p>Until next time!</p>
+</div>
+<div id="animations-code" class="section level1">
+<h1>Animations code</h1>
+<p>If you want to reproduce the images and the animations which I used in this post, the complete code can be found <a href="https://github.com/MauricioCely/utilities_R">here</a>.</p>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/rstats/">rstats</a>
+  
+  <a class="badge badge-light" href="/tag/dataviz/">dataviz</a>
+  
+  <a class="badge badge-light" href="/tag/tutorial/">tutorial</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/&amp;text=Estimating%20$%5cpi$%20using%20the%20Monte%20Carlo%20Method." target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/&amp;t=Estimating%20$%5cpi$%20using%20the%20Monte%20Carlo%20Method." target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Estimating%20$%5cpi$%20using%20the%20Monte%20Carlo%20Method.&amp;body=https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Estimating%20$%5cpi$%20using%20the%20Monte%20Carlo%20Method.%20https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/ivan-mauricio-cely-toro/avatar_hu33d8f2710ea4928d295bd08cdc05f6eb_262109_270x270_fill_q100_lanczos_center.jpg" alt="Iván Mauricio Cely Toro">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="https://MauricioCely.github.io/">Iván Mauricio Cely Toro</a></h5>
+        <h6 class="card-subtitle">PhD student of Physics 🇧🇷</h6>
+        <p class="card-text">100% colombian 🇨🇴. Passionate about Science and its teaching. <strong>R</strong> enthusiast.</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?view_op=list_works&amp;hl=es&amp;user=zeb9d8AAAAAJ" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Ivan_Cely_Toro" target="_blank" rel="noopener">
+        <i class="fab fa-researchgate"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://orcid.org/0000-0003-2008-681X" target="_blank" rel="noopener">
+        <i class="fab fa-orcid"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/MauricioCely" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/Mauricio_Cely" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/doc/cv/cv.pdf" >
+        <i class="ai ai-cv"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks",
+        'slides' : "Slides"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.66c553246b0f279a03be6e5597f72b52.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+     Iván Mauricio Cely Toro - 2020
+  </p>
+
+  
+  
+
+
+
+
+
+  
+  
+  
+  
+
+  
+  
+    
+  
+  
+    
+  
+
+  
+
+  
+  <p class="powered-by copyright-license-text">
+    This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank">CC BY NC ND 4.0</a>
+  </p>
+  
+
+  <p class="powered-by footer-license-icons">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="CC icon">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="CC by icon">
+      
+        <img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="CC NC icon">
+      
+      
+        <img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="CC ND icon">
+      
+    </a>
+  </p>
+
+
+
+
+  <p class="powered-by">
+    Made with the Magic of <a href="https://rstudio.com/" target="_blank" rel="noopener"><i style ="color:#5595ff; font-size: 20px;" class="fab fa-r-project"></i></a> <a href="https://github.com/rstudio/blogdown" target="_blank" rel="noopener">blogdown</a>
+    and powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" class="back-to-top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

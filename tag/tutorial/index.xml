@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tutorial | Ctrl &#43; Shift &#43; M</title>
+    <link>https://MauricioCely.github.io/tag/tutorial/</link>
+      <atom:link href="https://MauricioCely.github.io/tag/tutorial/index.xml" rel="self" type="application/rss+xml" />
+    <description>tutorial</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>Iván Mauricio Cely Toro - 2020</copyright><lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://MauricioCely.github.io/img/doc/avatar.jpg</url>
+      <title>tutorial</title>
+      <link>https://MauricioCely.github.io/tag/tutorial/</link>
+    </image>
+    
+    <item>
+      <title>Estimating $\pi$ using the Monte Carlo Method.</title>
+      <link>https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/</link>
+      <pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
+      <guid>https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/</guid>
+      <description>
+&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;index_files/vembedr/css/vembedr.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#monte-carlo-method&#34;&gt;Monte Carlo method&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#simulations-1-000-000-million-points&#34;&gt;Simulations: 1 000 000 million points&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#animations-code&#34;&gt;Animations code&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I always asked myself how the scientist have achieved a precise definition for this constant, I guess measuring the circumference with a string and dividing by its diameter is not the easiest way. For this reason in this post I want to show one of the multiples methods to estimate &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt;, that using some animations made with &lt;code&gt;ggplot&lt;/code&gt; and &lt;code&gt;gganimate&lt;/code&gt;.&lt;/p&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;We all know that the symbol used by mathematicians to represent the ratio of a circle’s circumference to its diameter is the lowercase Greek letter &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt;.&lt;/p&gt;
+&lt;span class=&#34;math display&#34;&gt;\[\pi =\frac{C}{d}\]&lt;/span&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:piratio&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;Pi_ratio.svg&#34; alt=&#34;The constant $\pi$ is defined as the ratio between the circunference to its diamater. *Source: [Wikipedia](https://en.wikipedia.org/wiki/File:Pi_eq_C_over_d.svg)*.&#34; width=&#34;300px&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: The constant &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; is defined as the ratio between the circunference to its diamater. &lt;em&gt;Source: &lt;a href=&#34;https://en.wikipedia.org/wiki/File:Pi_eq_C_over_d.svg&#34;&gt;Wikipedia&lt;/a&gt;&lt;/em&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;This ratio is constant, regardless of the circle’s size. &lt;strong&gt;pi&lt;/strong&gt; is perhaps the most famous of the irrational numbers, which means it can not be expressed as a common fraction converting it in an incommensurable number whose digits never settles into a permanently repeating pattern and appear to be randomly distributed.&lt;/p&gt;
+&lt;p&gt;Nowadays &lt;a href=&#34;https://www.npr.org/2019/03/14/703566696/the-woman-who-calculated-31-trillion-digits-of-pi&#34;&gt;31 trillon digits&lt;/a&gt; of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; are known, but do we need really this level of accuracy? NASA indeed has answered this question in a very interesting article I recommend you &lt;a href=&#34;https://www.jpl.nasa.gov/edu/news/2016/3/16/how-many-decimals-of-pi-do-we-really-need/&#34;&gt;&lt;em&gt;How Many Decimals of Pi Do We Really Need?&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;monte-carlo-method&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Monte Carlo method&lt;/h1&gt;
+&lt;p&gt;Monte Carlo methods are a subset of computational algorithms that use the process of repeated random sampling to make numerical estimations of unknown parameters. To estimate &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; the method consists of drawing on a canvas a square with an inner circle. As we know the area of the circle is &lt;span class=&#34;math inline&#34;&gt;\(A_{\bigcirc} = \pi r^2\)&lt;/span&gt;, and the area of the square is &lt;span class=&#34;math inline&#34;&gt;\(A_{\square} = (2r)^2 = 4r^2\)&lt;/span&gt;, see Figure &lt;a href=&#34;#fig:squarecircle&#34;&gt;2&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:squarecircle&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;square_circle_ratio.png&#34; alt=&#34;Circle and square areas.&#34; width=&#34;70%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 2: Circle and square areas.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;As shown below dividing the area of the circle, by the area of the square we get &lt;span class=&#34;math inline&#34;&gt;\(\pi /4\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\frac{A_{\bigcirc}}{A_{\square}} = \frac{\pi \cancel{r^2}}{4 \cancel{r^2}} \Rightarrow \boxed{\pi = 4 \frac{A_{\bigcirc}}{A_{\square}}}\]&lt;/span&gt;
+If a large number of random points inside the square is generated and the quantity of points inside the circle is counted.
+We can use the following ratio to estimate Pi:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\pi \approx 4 \frac{\text{number of points in the circle}}{\text{total number of points}}
+\]&lt;/span&gt;
+If you haven’t understand the process yet the following video gives a very clear and didactic explanation about it, this will help you for sure.&lt;/p&gt;
+&lt;div class=&#34;vembedr embed-responsive embed-responsive-16by9&#34; align=&#34;center&#34;&gt;
+&lt;div&gt;
+&lt;iframe src=&#34;https://www.youtube.com/embed/ELetCV_wX_c&#34; width=&#34;533&#34; height=&#34;300&#34; frameborder=&#34;0&#34; allowfullscreen=&#34;&#34; class=&#34;embed-responsive-item&#34;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simulations-1-000-000-million-points&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Simulations: 1 000 000 million points&lt;/h1&gt;
+&lt;p&gt;To estimate &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; we are going to plot randomly points using the &lt;code&gt;runif()&lt;/code&gt; function and then count how many of them are inside the circle. The canvas in this case is the &lt;em&gt;x-y&lt;/em&gt; plane, a square of side 2 units and an inner circle of radius 1 are plotted centered in the origin &lt;span class=&#34;math inline&#34;&gt;\((0,0)\)&lt;/span&gt;. The number of points inside the circle satisfies the condition &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{x^{2}+y^{2}} \leq r\)&lt;/span&gt;, where &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt; has to be 1 in our case, the radius of the unit circle. The idea now is to estimate &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; as increasing the number of points, in the code below if the point falls inside the circle was assigned &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt; otherwise it is &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In figure &lt;a href=&#34;#fig:facet-points&#34;&gt;3&lt;/a&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; is estimated for 6 different simulations with different sample size to assess how the estimates vary.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:facet-points&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;powers-of-ten.png&#34; alt=&#34;Estimation of $\pi$ for different point quantities. Points are randomly scattered inside the square, some fall within the unit circle.&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 3: Estimation of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; for different point quantities. Points are randomly scattered inside the square, some fall within the unit circle.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Results for some values of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; are shown in the Table &lt;a href=&#34;#tab:table-pi&#34;&gt;1&lt;/a&gt;.&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:table-pi&#34;&gt;Table 1: &lt;/span&gt;Some values of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; estimated using numerical simulations.
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+Number of points
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+Estimation of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+3.200000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+100
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+3.280000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+3.192000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+10000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+3.121600
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+100000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+3.144520
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1000000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+3.141972
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Figure &lt;a href=&#34;#fig:simulation-animation&#34;&gt;4&lt;/a&gt; represents the same results shown previously but as an animation, this allow us to understand better the how pi accuracy increases as the sample size do same.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:simulation-animation&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;animation_canvas.gif&#34; alt=&#34;Numerical approximation of $\pi$.&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 4: Numerical approximation of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Figure below show &lt;code&gt;R&lt;/code&gt; pi constant value as an horizontal &lt;span style=&#34;color:red&#34;&gt;red&lt;/span&gt; line. It is seen the convergence to the constant pi is related with the sample size. A sample size of 1,000,000 is used for this simulation.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:approx-animation&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;approx_pi.gif&#34; alt=&#34;Estimation of $\pi$ by sample size. The value is better as the sample points increases.&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 5: Estimation of &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; by sample size. The value is better as the sample points increases.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;⚠️ &lt;strong&gt;NOTE&lt;/strong&gt;: For the curious people in &lt;code&gt;R&lt;/code&gt; the &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; number is defined by default up to 48 digits.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3.141592653589793115997963468544185161590576171875&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I hope this short post had been helpful to you. If you have any opinion, suggestion or critic all comments are received, please write me.&lt;/p&gt;
+&lt;p&gt;Until next time!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animations-code&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Animations code&lt;/h1&gt;
+&lt;p&gt;If you want to reproduce the images and the animations which I used in this post, the complete code can be found &lt;a href=&#34;https://github.com/MauricioCely/utilities_R&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Unit Circle</title>
+      <link>https://MauricioCely.github.io/blog/2020/07/24/unit-circle/</link>
+      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://MauricioCely.github.io/blog/2020/07/24/unit-circle/</guid>
+      <description>
+&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+code.sourceCode &gt; span { display: inline-block; line-height: 1.25; }
+code.sourceCode &gt; span { color: inherit; text-decoration: inherit; }
+code.sourceCode &gt; span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode &gt; span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code &gt; span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code &gt; span &gt; a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode &gt; span &gt; a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+&lt;/style&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#packages&#34;&gt;Packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#dataset&#34;&gt;Dataset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code:&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;One great package in R is the &lt;code&gt;gganimate&lt;/code&gt; made by &lt;a href=&#34;https://twitter.com/thomasp85&#34;&gt;Thomas Lin Pedersen&lt;/a&gt;. And just for fun, we are going to explore that. Our aim is to create simple an animated 2D plot representing the relationship between Sine and Cosine.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;Before we begin I show you below the packages employed for the animation.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb1&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb1-1&#34;&gt;&lt;a href=&#34;#cb1-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(tidyverse) &lt;span class=&#34;co&#34;&gt;# Easily Install and Load the &amp;#39;Tidyverse&amp;#39; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-2&#34;&gt;&lt;a href=&#34;#cb1-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(gganimate) &lt;span class=&#34;co&#34;&gt;# A Grammar of Animated Graphics&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-3&#34;&gt;&lt;a href=&#34;#cb1-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(hrbrthemes) &lt;span class=&#34;co&#34;&gt;# Additional Themes, Theme Components and Utilities for &amp;#39;ggplot2&amp;#39;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As you probably know &lt;code&gt;tidyverse&lt;/code&gt; is to manipulate data and to create the visualization and the &lt;code&gt;hrbrthemes&lt;/code&gt; package has a very nice set of themes to make our plot visually more pleasant.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dataset&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Dataset&lt;/h1&gt;
+&lt;p&gt;The first step to elaborate our animation will be to evaluate both trigonometric functions in the angle, for this we will create a data set with a column called &lt;code&gt;theta&lt;/code&gt; which is a sequence from &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; to &lt;span class=&#34;math inline&#34;&gt;\(2\pi\)&lt;/span&gt; with 100 elements using the &lt;code&gt;seq()&lt;/code&gt; function and then we will calculate the values they take sine and cosine for each angle and we store the results in the columns and, respectively.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb2&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb2-1&#34;&gt;&lt;a href=&#34;#cb2-1&#34;&gt;&lt;/a&gt;df &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-2&#34;&gt;&lt;a href=&#34;#cb2-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;tibble&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;theta =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;100&lt;/span&gt;), &lt;span class=&#34;co&#34;&gt;### Angle&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-3&#34;&gt;&lt;a href=&#34;#cb2-3&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;x     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(theta), &lt;span class=&#34;co&#34;&gt;### x-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-4&#34;&gt;&lt;a href=&#34;#cb2-4&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;y     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(theta) &lt;span class=&#34;co&#34;&gt;### y-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-5&#34;&gt;&lt;a href=&#34;#cb2-5&#34;&gt;&lt;/a&gt;         )&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Recall that in R the arguments of the functions &lt;code&gt;sin()&lt;/code&gt; and &lt;code&gt;cos()&lt;/code&gt; are in radians, NOT in degrees.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A quick look at the data allows us to see that when the &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; is 0, the sine is 0 and the cosine is 1.&lt;/p&gt;
+&lt;div align=&#34;center&#34;&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+theta
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+x
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+y
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0000000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1.0000000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0000000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0634665
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9979867
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0634239
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1269330
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9919548
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1265925
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1903996
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9819287
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1892512
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.2538661
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9679487
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.2511480
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.3173326
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9500711
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.3120334
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;To appreciate the behavior of each function below, sine and cosine are plotted while &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; changes.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb3&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb3-1&#34;&gt;&lt;a href=&#34;#cb3-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-2&#34;&gt;&lt;a href=&#34;#cb3-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_line&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta, x, &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Cosine&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-3&#34;&gt;&lt;a href=&#34;#cb3-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_line&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta, y, &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Sine&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-4&#34;&gt;&lt;a href=&#34;#cb3-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-5&#34;&gt;&lt;a href=&#34;#cb3-5&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;scale_color_manual&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;values =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;, &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-6&#34;&gt;&lt;a href=&#34;#cb3-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-7&#34;&gt;&lt;a href=&#34;#cb3-7&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:sine-cosine&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;index_files/figure-html/sine-cosine-1.png&#34; alt=&#34;Evolution of sine and cosine functions as $\theta$ changes&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Evolution of sine and cosine functions as &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; changes
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;It can be seen that both functions take values between $ -1 $ and $ 1 $, although both oscillate in the same way, it seems that they are &lt;em&gt;displaced&lt;/em&gt; horizontally or better out of phase with respect to each other. Being curious we could ask ourselves what happens if we graph the cosine values on the abscissa and those of the sine on the ordinate. Voilà!, we get a circle as a result.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb4&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb4-1&#34;&gt;&lt;a href=&#34;#cb4-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-2&#34;&gt;&lt;a href=&#34;#cb4-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y=&lt;/span&gt; y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-3&#34;&gt;&lt;a href=&#34;#cb4-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-4&#34;&gt;&lt;a href=&#34;#cb4-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-5&#34;&gt;&lt;a href=&#34;#cb4-5&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:unit-circle&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;index_files/figure-html/unit-circle-1.png&#34; alt=&#34;The unit circle&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 2: The unit circle
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;How are the functions Sine and Cosine related to a circle? Let’s find out. This circle is known as the &lt;strong&gt;unit circle&lt;/strong&gt;, which has radius 1 and is centered at the origin &lt;span class=&#34;math inline&#34;&gt;\((0,0)\)&lt;/span&gt; of the &lt;em&gt;Cartesian coordinate system&lt;/em&gt;. The importance of this circle is that it makes some math topics easier and more manageable. In the case of &lt;em&gt;trigonometry&lt;/em&gt; for any angle &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;, the values for sine and cosine are nothing more than &lt;span class=&#34;math inline&#34;&gt;\(sin(\theta) = y\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(cos(\theta) = x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Using sine and cosine, it is possible to describe any point &lt;span class=&#34;math inline&#34;&gt;\((x,y)\)&lt;/span&gt; as an alternative to the point &lt;span class=&#34;math inline&#34;&gt;\((r, \theta)\)&lt;/span&gt;, where &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt; is the length of a line segment from the origin to the point and &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; is the angle between the line segment and the x-axis. This is called the polar coordinate system and the relation &lt;span class=&#34;math inline&#34;&gt;\((x,y) = \left( rcos(\theta),rsin(\theta) \right)\)&lt;/span&gt; is used to convert. If you want to better understand and see how this relationship is, visit this &lt;a href=&#34;https://setosa.io/ev/sine-and-cosine/&#34;&gt;site&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb5&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb5-1&#34;&gt;&lt;a href=&#34;#cb5-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-2&#34;&gt;&lt;a href=&#34;#cb5-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y=&lt;/span&gt; y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-3&#34;&gt;&lt;a href=&#34;#cb5-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;size =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-4&#34;&gt;&lt;a href=&#34;#cb5-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb5-5&#34;&gt;&lt;a href=&#34;#cb5-5&#34;&gt;&lt;/a&gt;               &lt;span class=&#34;dt&#34;&gt;arrow =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;arrow&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;length =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;unit&lt;/span&gt;(&lt;span class=&#34;fl&#34;&gt;1.7&lt;/span&gt;, &lt;span class=&#34;st&#34;&gt;&amp;quot;mm&amp;quot;&lt;/span&gt;))) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-6&#34;&gt;&lt;a href=&#34;#cb5-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb5-7&#34;&gt;&lt;a href=&#34;#cb5-7&#34;&gt;&lt;/a&gt;               &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-8&#34;&gt;&lt;a href=&#34;#cb5-8&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb5-9&#34;&gt;&lt;a href=&#34;#cb5-9&#34;&gt;&lt;/a&gt;               &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-10&#34;&gt;&lt;a href=&#34;#cb5-10&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_hline&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;yintercept =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-11&#34;&gt;&lt;a href=&#34;#cb5-11&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_vline&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;xintercept =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-12&#34;&gt;&lt;a href=&#34;#cb5-12&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-13&#34;&gt;&lt;a href=&#34;#cb5-13&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-14&#34;&gt;&lt;a href=&#34;#cb5-14&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:circle-comp&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;index_files/figure-html/circle-comp-1.png&#34; alt=&#34;Unit circle. The components of any point $(x,y)$ on the circumference represent the cosine and sine of the angle $\theta$ that forms with the horizontal respectively.&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 3: Unit circle. The components of any point &lt;span class=&#34;math inline&#34;&gt;\((x,y)\)&lt;/span&gt; on the circumference represent the cosine and sine of the angle &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; that forms with the horizontal respectively.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The task now is to combine the graphs of the circle and the sine and cosine. At the end of the post you will find &lt;a href=&#34;#código&#34;&gt;code&lt;/a&gt; that I used to create the animation that you see in Figure &lt;a href=&#34;#fig:animation&#34;&gt;4&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:animation&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;unit_circle.gif&#34; alt=&#34;Animation of the relationship between the unit circle, sine and cosine&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 4: Animation of the relationship between the unit circle, sine and cosine
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Starting from the origin, the arrow travels the circumference of radius 1 from the horizontal axis completing a 360 degree turn. &lt;span style=&#34;color:#FAAB18&#34;&gt;&lt;em&gt;Horizontal&lt;/em&gt;&lt;/span&gt; and &lt;span style=&#34;color:steelblue&#34;&gt;&lt;em&gt;vertical&lt;/em&gt;&lt;/span&gt; components represent trigonometric functions as the angle varies, as seen when one grows the other decreases.&lt;/p&gt;
+&lt;p&gt;If we take the vertical projection of the point around our circumference and project it in a straight line (along the axis &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;) in the plot it is to the right of the circle. This brings us to the &lt;span style=&#34;color:red&#34;&gt;&lt;em&gt;red&lt;/em&gt;&lt;/span&gt; dot. The coordinate &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; of this red point is the value of the sine function evaluated at the angle &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Coordinate of the vertically oscillating point &lt;span class=&#34;math inline&#34;&gt;\(y = sin (\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As the angle &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; changes, we can see the red dot move up and down, tracing the blue graph. This is the graph for the sine function. The dashed lines you see passing mark each quadrant along the circle, that is, at each angle of $ 90° $ or &lt;span class=&#34;math inline&#34;&gt;\(\pi/2\)&lt;/span&gt; radians. Notice how the sine curve goes from 1, to zero, to -1, then returns to zero, exactly on these lines. This reflects the fact that $ sin(0) = 0 $, &lt;span class=&#34;math inline&#34;&gt;\(sin(\pi/2) = 1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(sin(\pi) = 0\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(sin(3 \pi / 2) = -1\)&lt;/span&gt; .&lt;/p&gt;
+&lt;p&gt;If we follow the same reasoning and imagine a projected point parallel to the coordinate &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, it is possible to deduce the behavior of the cosine function evaluated at angle &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;, that is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Coordinate of the point that oscillates horizontally $ x = cos() $&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The yellow curve drawn by this imaginary point is the graph of the cosine function. Look again at how it behaves when it crosses each quadrant, reflecting the fact that &lt;span class=&#34;math inline&#34;&gt;\(cos(0) = 1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(cos(\pi/2) = 0\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(cos(\pi) = -1\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(cos( 3\pi / 2) = 0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Now is your time to try. I hope this animation and short explanation about the unit circle and the sine and cosine function are useful to you. Until next time!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;code&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Code:&lt;/h1&gt;
+&lt;p&gt;If you prefer you can find a script with the complete code &lt;a href=&#34;https://github.com/MauricioCely/utilities_R&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb6&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb6-1&#34;&gt;&lt;a href=&#34;#cb6-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(tidyverse) &lt;span class=&#34;co&#34;&gt;# Easily Install and Load the &amp;#39;Tidyverse&amp;#39; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-2&#34;&gt;&lt;a href=&#34;#cb6-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(gganimate) &lt;span class=&#34;co&#34;&gt;# A Grammar of Animated Graphics&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-3&#34;&gt;&lt;a href=&#34;#cb6-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(hrbrthemes) &lt;span class=&#34;co&#34;&gt;# Additional Themes, Theme Components and Utilities for &amp;#39;ggplot2&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-4&#34;&gt;&lt;a href=&#34;#cb6-4&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-5&#34;&gt;&lt;a href=&#34;#cb6-5&#34;&gt;&lt;/a&gt;df &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-6&#34;&gt;&lt;a href=&#34;#cb6-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;tibble&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;theta =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;100&lt;/span&gt;), &lt;span class=&#34;co&#34;&gt;### Angle&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-7&#34;&gt;&lt;a href=&#34;#cb6-7&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;x     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(theta), &lt;span class=&#34;co&#34;&gt;### x-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-8&#34;&gt;&lt;a href=&#34;#cb6-8&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;y     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(theta) &lt;span class=&#34;co&#34;&gt;### y-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-9&#34;&gt;&lt;a href=&#34;#cb6-9&#34;&gt;&lt;/a&gt;         )&lt;/span&gt;
+&lt;span id=&#34;cb6-10&#34;&gt;&lt;a href=&#34;#cb6-10&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-11&#34;&gt;&lt;a href=&#34;#cb6-11&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;### Add frame colum for each step of the animation&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-12&#34;&gt;&lt;a href=&#34;#cb6-12&#34;&gt;&lt;/a&gt;df &amp;lt;-&lt;/span&gt;
+&lt;span id=&#34;cb6-13&#34;&gt;&lt;a href=&#34;#cb6-13&#34;&gt;&lt;/a&gt;df &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-14&#34;&gt;&lt;a href=&#34;#cb6-14&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;mutate&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;frame =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;n&lt;/span&gt;()) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-15&#34;&gt;&lt;a href=&#34;#cb6-15&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;relocate&lt;/span&gt;(frame)&lt;/span&gt;
+&lt;span id=&#34;cb6-16&#34;&gt;&lt;a href=&#34;#cb6-16&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-17&#34;&gt;&lt;a href=&#34;#cb6-17&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;### Labels superior axis in radians&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-18&#34;&gt;&lt;a href=&#34;#cb6-18&#34;&gt;&lt;/a&gt;rad_labels &amp;lt;-&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))),&lt;/span&gt;
+&lt;span id=&#34;cb6-19&#34;&gt;&lt;a href=&#34;#cb6-19&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-20&#34;&gt;&lt;a href=&#34;#cb6-20&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(pi, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-21&#34;&gt;&lt;a href=&#34;#cb6-21&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-22&#34;&gt;&lt;a href=&#34;#cb6-22&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))),&lt;/span&gt;
+&lt;span id=&#34;cb6-23&#34;&gt;&lt;a href=&#34;#cb6-23&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-24&#34;&gt;&lt;a href=&#34;#cb6-24&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-25&#34;&gt;&lt;a href=&#34;#cb6-25&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-26&#34;&gt;&lt;a href=&#34;#cb6-26&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;)))&lt;/span&gt;
+&lt;span id=&#34;cb6-27&#34;&gt;&lt;a href=&#34;#cb6-27&#34;&gt;&lt;/a&gt;                 )&lt;/span&gt;
+&lt;span id=&#34;cb6-28&#34;&gt;&lt;a href=&#34;#cb6-28&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-29&#34;&gt;&lt;a href=&#34;#cb6-29&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-30&#34;&gt;&lt;a href=&#34;#cb6-30&#34;&gt;&lt;/a&gt;sine &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-31&#34;&gt;&lt;a href=&#34;#cb6-31&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-32&#34;&gt;&lt;a href=&#34;#cb6-32&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Circle&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-33&#34;&gt;&lt;a href=&#34;#cb6-33&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(x, y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-34&#34;&gt;&lt;a href=&#34;#cb6-34&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(x, y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-35&#34;&gt;&lt;a href=&#34;#cb6-35&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Angle arrow&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-36&#34;&gt;&lt;a href=&#34;#cb6-36&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;arrow =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;arrow&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;length =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;unit&lt;/span&gt;(&lt;span class=&#34;fl&#34;&gt;1.7&lt;/span&gt;, &lt;span class=&#34;st&#34;&gt;&amp;quot;mm&amp;quot;&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;type =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;closed&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-37&#34;&gt;&lt;a href=&#34;#cb6-37&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;ot&#34;&gt;Inf&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;dashed&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-38&#34;&gt;&lt;a href=&#34;#cb6-38&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Red point and its line&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-39&#34;&gt;&lt;a href=&#34;#cb6-39&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;1.5&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;size =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-40&#34;&gt;&lt;a href=&#34;#cb6-40&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_vline&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;xintercept =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-41&#34;&gt;&lt;a href=&#34;#cb6-41&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Connecting lines circle and functions&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-42&#34;&gt;&lt;a href=&#34;#cb6-42&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; y, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-43&#34;&gt;&lt;a href=&#34;#cb6-43&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-44&#34;&gt;&lt;a href=&#34;#cb6-44&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-45&#34;&gt;&lt;a href=&#34;#cb6-45&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_text&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;-0.12&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;0.5&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;label =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;sin(theta)&amp;quot;&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;parse =&lt;/span&gt; T, &lt;span class=&#34;dt&#34;&gt;angle =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;90&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-46&#34;&gt;&lt;a href=&#34;#cb6-46&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-47&#34;&gt;&lt;a href=&#34;#cb6-47&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; y, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-48&#34;&gt;&lt;a href=&#34;#cb6-48&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_text&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;0.5&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;-0.12&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;label =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;cos(theta)&amp;quot;&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;parse =&lt;/span&gt; T) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-49&#34;&gt;&lt;a href=&#34;#cb6-49&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-50&#34;&gt;&lt;a href=&#34;#cb6-50&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt;  y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-51&#34;&gt;&lt;a href=&#34;#cb6-51&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, x), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-52&#34;&gt;&lt;a href=&#34;#cb6-52&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt;  x), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-53&#34;&gt;&lt;a href=&#34;#cb6-53&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;expand =&lt;/span&gt; F, &lt;span class=&#34;dt&#34;&gt;xlim =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;fl&#34;&gt;1.1&lt;/span&gt;, &lt;span class=&#34;fl&#34;&gt;8.4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;ylim =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;fl&#34;&gt;1.1&lt;/span&gt;, &lt;span class=&#34;fl&#34;&gt;1.1&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-54&#34;&gt;&lt;a href=&#34;#cb6-54&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;scale_x_continuous&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;breaks =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, (&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;9&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-55&#34;&gt;&lt;a href=&#34;#cb6-55&#34;&gt;&lt;/a&gt;                     &lt;span class=&#34;dt&#34;&gt;labels =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;360&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;9&lt;/span&gt;)), &lt;span class=&#34;dt&#34;&gt;name =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;degrees&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-56&#34;&gt;&lt;a href=&#34;#cb6-56&#34;&gt;&lt;/a&gt;                     &lt;span class=&#34;dt&#34;&gt;sec.axis =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sec_axis&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;trans =&lt;/span&gt; &lt;span class=&#34;op&#34;&gt;~&lt;/span&gt;.&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-57&#34;&gt;&lt;a href=&#34;#cb6-57&#34;&gt;&lt;/a&gt;                                         &lt;span class=&#34;dt&#34;&gt;breaks =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;rep&lt;/span&gt;(&lt;span class=&#34;ot&#34;&gt;NA&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;3&lt;/span&gt;), &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, (&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi)&lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;9&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-58&#34;&gt;&lt;a href=&#34;#cb6-58&#34;&gt;&lt;/a&gt;                                         &lt;span class=&#34;dt&#34;&gt;labels =&lt;/span&gt;  &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, rad_labels),&lt;/span&gt;
+&lt;span id=&#34;cb6-59&#34;&gt;&lt;a href=&#34;#cb6-59&#34;&gt;&lt;/a&gt;                                         &lt;span class=&#34;dt&#34;&gt;name =&lt;/span&gt;   &lt;span class=&#34;st&#34;&gt;&amp;quot;radians&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-60&#34;&gt;&lt;a href=&#34;#cb6-60&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;title =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Unit Circle - Sine and Cosine Functions&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-61&#34;&gt;&lt;a href=&#34;#cb6-61&#34;&gt;&lt;/a&gt;       &lt;span class=&#34;dt&#34;&gt;subtitle =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Sine and cosine can be generated by projecting the tip of a vector onto the y-axis and x-axis as the&lt;/span&gt;&lt;span class=&#34;ch&#34;&gt;\n&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; vector rotates about the origin.&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-62&#34;&gt;&lt;a href=&#34;#cb6-62&#34;&gt;&lt;/a&gt;       &lt;span class=&#34;dt&#34;&gt;caption =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Created by @Mauricio_Cely&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-63&#34;&gt;&lt;a href=&#34;#cb6-63&#34;&gt;&lt;/a&gt;       &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-64&#34;&gt;&lt;a href=&#34;#cb6-64&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-65&#34;&gt;&lt;a href=&#34;#cb6-65&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;plot.margin =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;margin&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;-1&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;unit =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;cm&amp;quot;&lt;/span&gt;), &lt;/span&gt;
+&lt;span id=&#34;cb6-66&#34;&gt;&lt;a href=&#34;#cb6-66&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;plot.subtitle =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;element_text&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;face =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;italic&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-67&#34;&gt;&lt;a href=&#34;#cb6-67&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;transition_reveal&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;along =&lt;/span&gt; frame)&lt;/span&gt;
+&lt;span id=&#34;cb6-68&#34;&gt;&lt;a href=&#34;#cb6-68&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-69&#34;&gt;&lt;a href=&#34;#cb6-69&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;# options(gganimate.dev_args = list(res = 115))&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-70&#34;&gt;&lt;a href=&#34;#cb6-70&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-71&#34;&gt;&lt;a href=&#34;#cb6-71&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;animate&lt;/span&gt;(sine,&lt;/span&gt;
+&lt;span id=&#34;cb6-72&#34;&gt;&lt;a href=&#34;#cb6-72&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;width =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;1600&lt;/span&gt;, &lt;span class=&#34;co&#34;&gt;# 900px wide&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-73&#34;&gt;&lt;a href=&#34;#cb6-73&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;height =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;800&lt;/span&gt;, &lt;span class=&#34;co&#34;&gt;# 600px high&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-74&#34;&gt;&lt;a href=&#34;#cb6-74&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;duration =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;10&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-75&#34;&gt;&lt;a href=&#34;#cb6-75&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;renderer =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;gifski_renderer&lt;/span&gt;(),&lt;/span&gt;
+&lt;span id=&#34;cb6-76&#34;&gt;&lt;a href=&#34;#cb6-76&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;res =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;200&lt;/span&gt;) &lt;span class=&#34;co&#34;&gt;# 10 frames per second&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-77&#34;&gt;&lt;a href=&#34;#cb6-77&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-78&#34;&gt;&lt;a href=&#34;#cb6-78&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;anim_save&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;unit_circle.gif&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rstats | Ctrl &#43; Shift &#43; M</title>
+    <link>https://MauricioCely.github.io/es/tag/rstats/</link>
+      <atom:link href="https://MauricioCely.github.io/es/tag/rstats/index.xml" rel="self" type="application/rss+xml" />
+    <description>rstats</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>es-es</language><copyright>Iván Mauricio Cely Toro - 2020</copyright><lastBuildDate>Sun, 18 Oct 2020 16:38:36 -0300</lastBuildDate>
+    <image>
+      <url>https://MauricioCely.github.io/img/doc/avatar.jpg</url>
+      <title>rstats</title>
+      <link>https://MauricioCely.github.io/es/tag/rstats/</link>
+    </image>
+    
+    <item>
+      <title>Mapa apilado en ggplot</title>
+      <link>https://MauricioCely.github.io/es/blog/2020/10/18/stacked-map/</link>
+      <pubDate>Sun, 18 Oct 2020 16:38:36 -0300</pubDate>
+      <guid>https://MauricioCely.github.io/es/blog/2020/10/18/stacked-map/</guid>
+      <description>
+&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+code.sourceCode &gt; span { display: inline-block; line-height: 1.25; }
+code.sourceCode &gt; span { color: inherit; text-decoration: inherit; }
+code.sourceCode &gt; span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode &gt; span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code &gt; span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code &gt; span &gt; a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode &gt; span &gt; a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+&lt;/style&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introducción&#34;&gt;Introducción&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#header-2&#34;&gt;Header 2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;introducción&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introducción&lt;/h1&gt;
+&lt;p&gt;En este post se muestra como deformar y apilar mapas para dar la impresión de mapas superpuestos en diferentes capas usando &lt;code&gt;ggplot&lt;/code&gt;. Este código esta basado en el &lt;a href=&#34;https://gist.github.com/rafapereirabr/97a7c92d40f91cd20a10e8e0165a0aef&#34;&gt;&lt;em&gt;gist&lt;/em&gt;&lt;/a&gt; publicado por Rafael Pereira. ¡Gracias Rafa!&lt;/p&gt;
+&lt;p&gt;Las librerías necesarias para reproducir el ejemplo son:&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb1&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb1-1&#34;&gt;&lt;a href=&#34;#cb1-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(tidyverse) &lt;span class=&#34;co&#34;&gt;# Easily Install and Load the &amp;#39;Tidyverse&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-2&#34;&gt;&lt;a href=&#34;#cb1-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(ggnewscale) &lt;span class=&#34;co&#34;&gt;# Multiple Fill and Colour Scales in &amp;#39;ggplot2&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-3&#34;&gt;&lt;a href=&#34;#cb1-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(gganimate) &lt;span class=&#34;co&#34;&gt;# A Grammar of Animated Graphics&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-4&#34;&gt;&lt;a href=&#34;#cb1-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(hrbrthemes) &lt;span class=&#34;co&#34;&gt;# Additional Themes, Theme Components and Utilities for &amp;#39;ggplot2&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-5&#34;&gt;&lt;a href=&#34;#cb1-5&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(rgdal) &lt;span class=&#34;co&#34;&gt;# Bindings for the &amp;#39;Geospatial&amp;#39; Data Abstraction Library&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-6&#34;&gt;&lt;a href=&#34;#cb1-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(pals) &lt;span class=&#34;co&#34;&gt;# Color Palettes, Colormaps, and Tools to Evaluate Them&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-7&#34;&gt;&lt;a href=&#34;#cb1-7&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(transformr) &lt;span class=&#34;co&#34;&gt;# Polygon and Path Transformations&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Los datos empleados en para este ejemplo los puedes &lt;a href=&#34;files/datos.csv&#34;&gt;&lt;strong&gt;descargar&lt;/strong&gt;&lt;/a&gt; aquí. Los datos fueron extraídos del sitio web del ministerio de Salud y Protección Social de la República de Colombia &lt;a href=&#34;https://www.minsalud.gov.co/salud/publica/PET/Paginas/Covid-19_copia.aspx&#34;&gt;&lt;/a&gt;, se reporta el número de casos de pacientes fallecidos, activos y recuperados por género que contrayeron COVID-19 para cada departamento hasta el día 10-10-2020.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb2&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb2-1&#34;&gt;&lt;a href=&#34;#cb2-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;# Translation to center of coordinate system ------------------------------&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-2&#34;&gt;&lt;a href=&#34;#cb2-2&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-3&#34;&gt;&lt;a href=&#34;#cb2-3&#34;&gt;&lt;/a&gt;mapa.covid &amp;lt;-&lt;/span&gt;
+&lt;span id=&#34;cb2-4&#34;&gt;&lt;a href=&#34;#cb2-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;read_csv&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;files/datos.csv&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-5&#34;&gt;&lt;a href=&#34;#cb2-5&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;select&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;id)&lt;/span&gt;
+&lt;span id=&#34;cb2-6&#34;&gt;&lt;a href=&#34;#cb2-6&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-7&#34;&gt;&lt;a href=&#34;#cb2-7&#34;&gt;&lt;/a&gt;mapa.covid &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;head&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-8&#34;&gt;&lt;a href=&#34;#cb2-8&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;kable&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;align =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;c&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-9&#34;&gt;&lt;a href=&#34;#cb2-9&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;kable_styling&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;striped&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;full_width =&lt;/span&gt; &lt;span class=&#34;ot&#34;&gt;TRUE&lt;/span&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+long
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+lat
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+group
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+Cod.Dep
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+Departamento
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+Tipo
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+F
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+M
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+Casos
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+rango
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-76.95417
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8.185339
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Antioquia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Activo
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8792
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8382
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+17174
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+16000 - 18000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-76.95417
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8.185339
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Antioquia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Recuperado
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+56817
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+57650
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+114467
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1e+05 - 120000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-76.95417
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8.185339
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Antioquia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Fallecido
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1046
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1655
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+2701
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+2000 - 3000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-76.93473
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8.188839
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Antioquia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Activo
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8792
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8382
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+17174
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+16000 - 18000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-76.93473
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8.188839
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Antioquia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Recuperado
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+56817
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+57650
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+114467
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1e+05 - 120000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-76.93473
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+8.188839
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Antioquia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+Fallecido
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1046
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1655
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+2701
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+2000 - 3000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb3&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb3-1&#34;&gt;&lt;a href=&#34;#cb3-1&#34;&gt;&lt;/a&gt;mapa.covid &amp;lt;-&lt;/span&gt;
+&lt;span id=&#34;cb3-2&#34;&gt;&lt;a href=&#34;#cb3-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;mapa.covid &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-3&#34;&gt;&lt;a href=&#34;#cb3-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;mutate&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;long =&lt;/span&gt; long &lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;mean&lt;/span&gt;(long),&lt;/span&gt;
+&lt;span id=&#34;cb3-4&#34;&gt;&lt;a href=&#34;#cb3-4&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;lat =&lt;/span&gt; lat &lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;mean&lt;/span&gt;(lat))&lt;/span&gt;
+&lt;span id=&#34;cb3-5&#34;&gt;&lt;a href=&#34;#cb3-5&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-6&#34;&gt;&lt;a href=&#34;#cb3-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;# Shear effect and Rotation Matrix ------------------------------&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-7&#34;&gt;&lt;a href=&#34;#cb3-7&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-8&#34;&gt;&lt;a href=&#34;#cb3-8&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;# Shear Matrix&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-9&#34;&gt;&lt;a href=&#34;#cb3-9&#34;&gt;&lt;/a&gt;shear_matrix &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-10&#34;&gt;&lt;a href=&#34;#cb3-10&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;matrix&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;,&lt;span class=&#34;fl&#34;&gt;0.7&lt;/span&gt;,&lt;span class=&#34;fl&#34;&gt;0.5&lt;/span&gt;),&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;t&lt;/span&gt;
+&lt;span id=&#34;cb3-11&#34;&gt;&lt;a href=&#34;#cb3-11&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-12&#34;&gt;&lt;a href=&#34;#cb3-12&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;# Rotation matrix&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-13&#34;&gt;&lt;a href=&#34;#cb3-13&#34;&gt;&lt;/a&gt;rotation_matrix &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-14&#34;&gt;&lt;a href=&#34;#cb3-14&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;cf&#34;&gt;function&lt;/span&gt;(theta){&lt;/span&gt;
+&lt;span id=&#34;cb3-15&#34;&gt;&lt;a href=&#34;#cb3-15&#34;&gt;&lt;/a&gt;    &lt;span class=&#34;kw&#34;&gt;matrix&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(theta&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;180&lt;/span&gt;), &lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(theta&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;180&lt;/span&gt;),&lt;/span&gt;
+&lt;span id=&#34;cb3-16&#34;&gt;&lt;a href=&#34;#cb3-16&#34;&gt;&lt;/a&gt;             &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(theta&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;180&lt;/span&gt;), &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(theta&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;180&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb3-17&#34;&gt;&lt;a href=&#34;#cb3-17&#34;&gt;&lt;/a&gt;           &lt;span class=&#34;dt&#34;&gt;nrow =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;ncol =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;byrow =&lt;/span&gt; T) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-18&#34;&gt;&lt;a href=&#34;#cb3-18&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;round&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;digits =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;)&lt;/span&gt;
+&lt;span id=&#34;cb3-19&#34;&gt;&lt;a href=&#34;#cb3-19&#34;&gt;&lt;/a&gt;  }&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div id=&#34;header-2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Header 2&lt;/h2&gt;
+&lt;div id=&#34;header-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Header 3&lt;/h3&gt;
+&lt;div id=&#34;header-4&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Header 4&lt;/h4&gt;
+&lt;div id=&#34;header-5&#34; class=&#34;section level5&#34;&gt;
+&lt;h5&gt;Header 5&lt;/h5&gt;
+&lt;div id=&#34;header-6&#34; class=&#34;section level6&#34;&gt;
+&lt;h6&gt;Header 6&lt;/h6&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>El Círculo Unitario</title>
+      <link>https://MauricioCely.github.io/es/blog/2020/07/24/circulo-unitario/</link>
+      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://MauricioCely.github.io/es/blog/2020/07/24/circulo-unitario/</guid>
+      <description>
+&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+code.sourceCode &gt; span { display: inline-block; line-height: 1.25; }
+code.sourceCode &gt; span { color: inherit; text-decoration: inherit; }
+code.sourceCode &gt; span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode &gt; span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code &gt; span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code &gt; span &gt; a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode &gt; span &gt; a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+&lt;/style&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#paquetes&#34;&gt;Paquetes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#datos&#34;&gt;Datos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#código&#34;&gt;Código&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Uno de los grandes paquete en R es &lt;code&gt;gganimate&lt;/code&gt; creado por &lt;a href=&#34;https://twitter.com/thomasp85&#34;&gt;Thomas Lin Pedersen&lt;/a&gt;. Y solo por diversión, vamos a emplearlo. Nuestro objetivo es crear un gráfico 2D simple y animado que represente la relación entre el Seno y el Coseno.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;p&gt;Antes de comenzar, quiero mostrarles los paquetes empleados para la animación.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb1&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb1-1&#34;&gt;&lt;a href=&#34;#cb1-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(tidyverse) &lt;span class=&#34;co&#34;&gt;# Easily Install and Load the &amp;#39;Tidyverse&amp;#39; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-2&#34;&gt;&lt;a href=&#34;#cb1-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(gganimate) &lt;span class=&#34;co&#34;&gt;# A Grammar of Animated Graphics&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb1-3&#34;&gt;&lt;a href=&#34;#cb1-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(hrbrthemes) &lt;span class=&#34;co&#34;&gt;# Additional Themes, Theme Components and Utilities for &amp;#39;ggplot2&amp;#39;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;tidyverse&lt;/code&gt; es un paquete que reune varios paquetes de R (como &lt;code&gt;dpylr&lt;/code&gt;, &lt;code&gt;purr&lt;/code&gt;, &lt;code&gt;ggplot&lt;/code&gt; entre otros) para manipular y visualizar datos. Por otro lado, &lt;code&gt;hrbrthemes&lt;/code&gt; tiene un conjunto de temas para hacer que nuestros gráficos sean visualmente más agradable y así les demos un toque más elegante.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Datos&lt;/h1&gt;
+&lt;p&gt;El primer paso para elaborar nuestra animación será evaluar ambas funciones trigonométricas &lt;span class=&#34;math inline&#34;&gt;\(\left( cos(\theta),sin(\theta) \right)\)&lt;/span&gt; en el ángulo &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;, para esto crearemos un conjunto de datos con una columna llamada &lt;code&gt;theta&lt;/code&gt; que es una secuencia de &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; a &lt;span class=&#34;math inline&#34;&gt;\(2\pi\)&lt;/span&gt; con 100 elementos usando la función &lt;code&gt;seq()&lt;/code&gt; y luego calcularemos los valores que toman seno y coseno para cada angulo y almacenamos los resultados en las columnas &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; y &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, respectivamente.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb2&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb2-1&#34;&gt;&lt;a href=&#34;#cb2-1&#34;&gt;&lt;/a&gt;df &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-2&#34;&gt;&lt;a href=&#34;#cb2-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;tibble&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;theta =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;100&lt;/span&gt;), &lt;span class=&#34;co&#34;&gt;### Angle&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-3&#34;&gt;&lt;a href=&#34;#cb2-3&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;y     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(theta), &lt;span class=&#34;co&#34;&gt;### y-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-4&#34;&gt;&lt;a href=&#34;#cb2-4&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;x     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(theta) &lt;span class=&#34;co&#34;&gt;### x-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb2-5&#34;&gt;&lt;a href=&#34;#cb2-5&#34;&gt;&lt;/a&gt;         )&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Recordemos que en R los argumentos de las funciones &lt;code&gt;sin()&lt;/code&gt; y &lt;code&gt;cos()&lt;/code&gt; son en radianes, NO en grados.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Una mirada rapida de los datos nos permite ver que cuando &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; es 0, el seno es 0 y el coseno es 1.&lt;/p&gt;
+&lt;div align=&#34;center&#34;&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+theta
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+y
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+x
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0000000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0000000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+1.0000000
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0634665
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0634239
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9979867
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1269330
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1265925
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9919548
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1903996
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.1892512
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9819287
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.2538661
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.2511480
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9679487
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.3173326
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.3120334
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.9500711
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;Para apreciar el comportamiento de cada función a continuación se grafican seno y coseno a medida que &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; varia.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb3&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb3-1&#34;&gt;&lt;a href=&#34;#cb3-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-2&#34;&gt;&lt;a href=&#34;#cb3-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_line&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta, x, &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Cosine&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-3&#34;&gt;&lt;a href=&#34;#cb3-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_line&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta, y, &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Sine&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-4&#34;&gt;&lt;a href=&#34;#cb3-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-5&#34;&gt;&lt;a href=&#34;#cb3-5&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;scale_color_manual&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;values =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;, &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-6&#34;&gt;&lt;a href=&#34;#cb3-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb3-7&#34;&gt;&lt;a href=&#34;#cb3-7&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:sine-cosine&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;index_files/figure-html/sine-cosine-1.png&#34; alt=&#34;Gráfica de las funciones seno y coseno en función de $\theta$&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Gráfica de las funciones seno y coseno en función de &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Se puede observar que ambas funciones toman valores entre &lt;span class=&#34;math inline&#34;&gt;\(-1\)&lt;/span&gt; y &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt;, aunque ambas oscilan de la misma manera parece que están &lt;em&gt;desplazadas&lt;/em&gt; o mejor desfasadas horizontalmente una respecto a la otra. Siendo curiosos podríamos preguntarnos que ocurre si graficamos los valores de coseno en la abscisa y los del seno en la ordenada. ¡Voilà!, obtenemos como resultado un círculo.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb4&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb4-1&#34;&gt;&lt;a href=&#34;#cb4-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-2&#34;&gt;&lt;a href=&#34;#cb4-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y=&lt;/span&gt; y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-3&#34;&gt;&lt;a href=&#34;#cb4-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-4&#34;&gt;&lt;a href=&#34;#cb4-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb4-5&#34;&gt;&lt;a href=&#34;#cb4-5&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:unit-circle&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;index_files/figure-html/unit-circle-1.png&#34; alt=&#34;El círculo unitario.&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 2: El círculo unitario.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;¿Que relación tienen las funciones Seno y Coseno con un círculo? Vamos a descubrirlo. Este círculo es conocido como &lt;strong&gt;círculo unitario&lt;/strong&gt;, el cual tiene radio 1 y está centrado en el origen &lt;span class=&#34;math inline&#34;&gt;\((0,0)\)&lt;/span&gt; del sistema de &lt;em&gt;coordenadas cartesianas&lt;/em&gt;. La importancia de este círculo radica en que hace que algunos temas de las matemáticas sean más fáciles y manejables. En el caso de la &lt;em&gt;trigonometría&lt;/em&gt; para cualquier ángulo &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;, los valores para seno y coseno son nada más que &lt;span class=&#34;math inline&#34;&gt;\(sin(\theta) = y\)&lt;/span&gt; y &lt;span class=&#34;math inline&#34;&gt;\(cos(\theta) = x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Usando seno y coseno, es posible describir cualquier point &lt;span class=&#34;math inline&#34;&gt;\((x,y)\)&lt;/span&gt; como alternativa al punto &lt;span class=&#34;math inline&#34;&gt;\((r, \theta)\)&lt;/span&gt;, donde &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt; es la longitud de un segmento de recta desde el origen hasta el punto y &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; es el ángulo entre el segmento de recta y el eje x. Este es llamado el sitema de coordenadas polares y para convertir se emplea la relación &lt;span class=&#34;math inline&#34;&gt;\((x,y) = \left( rcos(\theta),rsin(\theta) \right)\)&lt;/span&gt;. Si quieres comprender y ver mejor como es esta relación visita este &lt;a href=&#34;https://setosa.io/ev/sine-and-cosine/&#34;&gt;sitio&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb5&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb5-1&#34;&gt;&lt;a href=&#34;#cb5-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-2&#34;&gt;&lt;a href=&#34;#cb5-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y=&lt;/span&gt; y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-3&#34;&gt;&lt;a href=&#34;#cb5-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;size =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-4&#34;&gt;&lt;a href=&#34;#cb5-4&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb5-5&#34;&gt;&lt;a href=&#34;#cb5-5&#34;&gt;&lt;/a&gt;               &lt;span class=&#34;dt&#34;&gt;arrow =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;arrow&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;length =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;unit&lt;/span&gt;(&lt;span class=&#34;fl&#34;&gt;1.7&lt;/span&gt;, &lt;span class=&#34;st&#34;&gt;&amp;quot;mm&amp;quot;&lt;/span&gt;))) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-6&#34;&gt;&lt;a href=&#34;#cb5-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb5-7&#34;&gt;&lt;a href=&#34;#cb5-7&#34;&gt;&lt;/a&gt;               &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-8&#34;&gt;&lt;a href=&#34;#cb5-8&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(pi&lt;span class=&#34;op&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb5-9&#34;&gt;&lt;a href=&#34;#cb5-9&#34;&gt;&lt;/a&gt;               &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-10&#34;&gt;&lt;a href=&#34;#cb5-10&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_hline&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;yintercept =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-11&#34;&gt;&lt;a href=&#34;#cb5-11&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_vline&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;xintercept =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-12&#34;&gt;&lt;a href=&#34;#cb5-12&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-13&#34;&gt;&lt;a href=&#34;#cb5-13&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb5-14&#34;&gt;&lt;a href=&#34;#cb5-14&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:circle-comp&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;index_files/figure-html/circle-comp-1.png&#34; alt=&#34;Circulo unitario. Las componentes de cualquier punto $(x,y)$ sobre la circunferencia representan el coseno y seno del ángulo $\theta$ que forma con la horizontal respectivamente&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 3: Circulo unitario. Las componentes de cualquier punto &lt;span class=&#34;math inline&#34;&gt;\((x,y)\)&lt;/span&gt; sobre la circunferencia representan el coseno y seno del ángulo &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; que forma con la horizontal respectivamente
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;La tarea ahora consiste en combinar los gráficos del círculo y el seno y coseno. Al final del post encontrarás &lt;a href=&#34;#código&#34;&gt;código&lt;/a&gt; que empleé para crear la animación que ve en la Figura &lt;a href=&#34;#fig:animacion&#34;&gt;4&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:animacion&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;unit_circle.gif&#34; alt=&#34;Animación de la relación entre el circulo unitario, seno y coseno&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 4: Animación de la relación entre el circulo unitario, seno y coseno
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Partiendo del origen, la flecha recorre la circunferencia de radio 1 desde el eje horizontal completando un giro de 360 grados. Las componentes &lt;span style=&#34;color:#FAAB18&#34;&gt;&lt;em&gt;horizontal&lt;/em&gt;&lt;/span&gt; y &lt;span style=&#34;color:steelblue&#34;&gt;&lt;em&gt;vertical&lt;/em&gt;&lt;/span&gt; representan las funciones trigónometricas a medida que el ángulo varia, como se ve cuando una crece la otra decrece.&lt;/p&gt;
+&lt;p&gt;Si tomamos la proyección vertical del punto alrederor de nuestra circunferencia y lo proyectamos en línea recta (a lo largo del eje &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;) en el gráfico a la derecha del círculo. Esto nos lleva al punto &lt;span style=&#34;color:red&#34;&gt;&lt;em&gt;rojo&lt;/em&gt;&lt;/span&gt;. La coordenada &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; de este punto rojo es el valor de la función seno evaluada en el ángulo &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Coordenada del punto que oscila verticalmente &lt;span class=&#34;math inline&#34;&gt;\(y = sin(\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A medida que cambia el ángulo &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;, podemos ver que el punto rojo se mueve hacia arriba y hacia abajo, trazando el gráfico azul. Este es el gráfico para la función seno. Las líneas discontinuas que ves pasar marcan cada cuadrante a lo largo del círculo, es decir, en cada ángulo de $ 90°$ o &lt;span class=&#34;math inline&#34;&gt;\(\pi/2\)&lt;/span&gt; radianes. Observa cómo la curva sinusoidal va de 1, a cero, a -1, luego vuelve a cero, exactamente en estas líneas. Esto refleja el hecho de que &lt;span class=&#34;math inline&#34;&gt;\(sin(0) = 0\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(sin(\pi/2) = 1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(sin(\pi) = 0\)&lt;/span&gt; y &lt;span class=&#34;math inline&#34;&gt;\(sin(3\pi/2) = -1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Si seguimos el mismo razonamiento e imaginamos un punto proyectado paralelo a la coordenada &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, es posible deducir el comportamiento de la función coseno evaluada en el ángulo &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;, es decir:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Coordenada del punto que oscila horizontalmente &lt;span class=&#34;math inline&#34;&gt;\(x = cos(\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;La curva amarilla trazada por este punto imaginario es la gráfica de la función coseno. Observa nuevamente cómo se comporta cuando cruza cada cuadrante, reflejando el hecho de que &lt;span class=&#34;math inline&#34;&gt;\(cos(0) = 1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(cos(\pi/2) = 0\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(cos(\pi) = -1\)&lt;/span&gt; y &lt;span class=&#34;math inline&#34;&gt;\(cos(3\pi/2) = 0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Ahora es tu momento de intentarlo. Espero que esta animación y breve explicación sobre el círculo unitario y la función seno y coseno te sean útiles. ¡Hasta la proxima!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;código&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Código&lt;/h1&gt;
+&lt;p&gt;Si prefieres puedes encontrar un script con el código completo &lt;a href=&#34;https://github.com/MauricioCely/utilities_R&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;sourceCode&#34; id=&#34;cb6&#34;&gt;&lt;pre class=&#34;sourceCode r&#34;&gt;&lt;code class=&#34;sourceCode r&#34;&gt;&lt;span id=&#34;cb6-1&#34;&gt;&lt;a href=&#34;#cb6-1&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(tidyverse) &lt;span class=&#34;co&#34;&gt;# Easily Install and Load the &amp;#39;Tidyverse&amp;#39; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-2&#34;&gt;&lt;a href=&#34;#cb6-2&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(gganimate) &lt;span class=&#34;co&#34;&gt;# A Grammar of Animated Graphics&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-3&#34;&gt;&lt;a href=&#34;#cb6-3&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;library&lt;/span&gt;(hrbrthemes) &lt;span class=&#34;co&#34;&gt;# Additional Themes, Theme Components and Utilities for &amp;#39;ggplot2&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-4&#34;&gt;&lt;a href=&#34;#cb6-4&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-5&#34;&gt;&lt;a href=&#34;#cb6-5&#34;&gt;&lt;/a&gt;df &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-6&#34;&gt;&lt;a href=&#34;#cb6-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;tibble&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;theta =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;100&lt;/span&gt;), &lt;span class=&#34;co&#34;&gt;### Angle&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-7&#34;&gt;&lt;a href=&#34;#cb6-7&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;x     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;cos&lt;/span&gt;(theta), &lt;span class=&#34;co&#34;&gt;### x-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-8&#34;&gt;&lt;a href=&#34;#cb6-8&#34;&gt;&lt;/a&gt;         &lt;span class=&#34;dt&#34;&gt;y     =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sin&lt;/span&gt;(theta) &lt;span class=&#34;co&#34;&gt;### y-component&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-9&#34;&gt;&lt;a href=&#34;#cb6-9&#34;&gt;&lt;/a&gt;         )&lt;/span&gt;
+&lt;span id=&#34;cb6-10&#34;&gt;&lt;a href=&#34;#cb6-10&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-11&#34;&gt;&lt;a href=&#34;#cb6-11&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;### Add frame colum for each step of the animation&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-12&#34;&gt;&lt;a href=&#34;#cb6-12&#34;&gt;&lt;/a&gt;df &amp;lt;-&lt;/span&gt;
+&lt;span id=&#34;cb6-13&#34;&gt;&lt;a href=&#34;#cb6-13&#34;&gt;&lt;/a&gt;df &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-14&#34;&gt;&lt;a href=&#34;#cb6-14&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;mutate&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;frame =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;n&lt;/span&gt;()) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-15&#34;&gt;&lt;a href=&#34;#cb6-15&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;relocate&lt;/span&gt;(frame)&lt;/span&gt;
+&lt;span id=&#34;cb6-16&#34;&gt;&lt;a href=&#34;#cb6-16&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-17&#34;&gt;&lt;a href=&#34;#cb6-17&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;### Labels superior axis in radians&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-18&#34;&gt;&lt;a href=&#34;#cb6-18&#34;&gt;&lt;/a&gt;rad_labels &amp;lt;-&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))),&lt;/span&gt;
+&lt;span id=&#34;cb6-19&#34;&gt;&lt;a href=&#34;#cb6-19&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-20&#34;&gt;&lt;a href=&#34;#cb6-20&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(pi, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-21&#34;&gt;&lt;a href=&#34;#cb6-21&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-22&#34;&gt;&lt;a href=&#34;#cb6-22&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))),&lt;/span&gt;
+&lt;span id=&#34;cb6-23&#34;&gt;&lt;a href=&#34;#cb6-23&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-24&#34;&gt;&lt;a href=&#34;#cb6-24&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-25&#34;&gt;&lt;a href=&#34;#cb6-25&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;frac&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi, &lt;span class=&#34;dv&#34;&gt;4&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-26&#34;&gt;&lt;a href=&#34;#cb6-26&#34;&gt;&lt;/a&gt;                       &lt;span class=&#34;kw&#34;&gt;expression&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;))&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;phantom&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;over&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;)))&lt;/span&gt;
+&lt;span id=&#34;cb6-27&#34;&gt;&lt;a href=&#34;#cb6-27&#34;&gt;&lt;/a&gt;                 )&lt;/span&gt;
+&lt;span id=&#34;cb6-28&#34;&gt;&lt;a href=&#34;#cb6-28&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-29&#34;&gt;&lt;a href=&#34;#cb6-29&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-30&#34;&gt;&lt;a href=&#34;#cb6-30&#34;&gt;&lt;/a&gt;sine &amp;lt;-&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-31&#34;&gt;&lt;a href=&#34;#cb6-31&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(df) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-32&#34;&gt;&lt;a href=&#34;#cb6-32&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Circle&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-33&#34;&gt;&lt;a href=&#34;#cb6-33&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(x, y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-34&#34;&gt;&lt;a href=&#34;#cb6-34&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(x, y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-35&#34;&gt;&lt;a href=&#34;#cb6-35&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Angle arrow&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-36&#34;&gt;&lt;a href=&#34;#cb6-36&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;arrow =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;arrow&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;length =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;unit&lt;/span&gt;(&lt;span class=&#34;fl&#34;&gt;1.7&lt;/span&gt;, &lt;span class=&#34;st&#34;&gt;&amp;quot;mm&amp;quot;&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;type =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;closed&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-37&#34;&gt;&lt;a href=&#34;#cb6-37&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;ot&#34;&gt;Inf&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;dashed&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-38&#34;&gt;&lt;a href=&#34;#cb6-38&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Red point and its line&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-39&#34;&gt;&lt;a href=&#34;#cb6-39&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;1.5&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;size =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-40&#34;&gt;&lt;a href=&#34;#cb6-40&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_vline&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;xintercept =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-41&#34;&gt;&lt;a href=&#34;#cb6-41&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;co&#34;&gt;### Connecting lines circle and functions&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-42&#34;&gt;&lt;a href=&#34;#cb6-42&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; y, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-43&#34;&gt;&lt;a href=&#34;#cb6-43&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-44&#34;&gt;&lt;a href=&#34;#cb6-44&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-45&#34;&gt;&lt;a href=&#34;#cb6-45&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_text&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;-0.12&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;0.5&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;label =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;sin(theta)&amp;quot;&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;parse =&lt;/span&gt; T, &lt;span class=&#34;dt&#34;&gt;angle =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;90&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-46&#34;&gt;&lt;a href=&#34;#cb6-46&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-47&#34;&gt;&lt;a href=&#34;#cb6-47&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_segment&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; y, &lt;span class=&#34;dt&#34;&gt;xend =&lt;/span&gt; x, &lt;span class=&#34;dt&#34;&gt;yend =&lt;/span&gt; y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;linetype =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-48&#34;&gt;&lt;a href=&#34;#cb6-48&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_text&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;0.5&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;fl&#34;&gt;-0.12&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;label =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;cos(theta)&amp;quot;&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;parse =&lt;/span&gt; T) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-49&#34;&gt;&lt;a href=&#34;#cb6-49&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-50&#34;&gt;&lt;a href=&#34;#cb6-50&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt;  y), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;steelblue&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-51&#34;&gt;&lt;a href=&#34;#cb6-51&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_path&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, x), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-52&#34;&gt;&lt;a href=&#34;#cb6-52&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_point&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;x =&lt;/span&gt; theta &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt;  x), &lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;#FAAB18&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-53&#34;&gt;&lt;a href=&#34;#cb6-53&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;coord_fixed&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;expand =&lt;/span&gt; F, &lt;span class=&#34;dt&#34;&gt;xlim =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;fl&#34;&gt;1.1&lt;/span&gt;, &lt;span class=&#34;fl&#34;&gt;8.4&lt;/span&gt;), &lt;span class=&#34;dt&#34;&gt;ylim =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;fl&#34;&gt;1.1&lt;/span&gt;, &lt;span class=&#34;fl&#34;&gt;1.1&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-54&#34;&gt;&lt;a href=&#34;#cb6-54&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;scale_x_continuous&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;breaks =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, (&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;9&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-55&#34;&gt;&lt;a href=&#34;#cb6-55&#34;&gt;&lt;/a&gt;                     &lt;span class=&#34;dt&#34;&gt;labels =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;360&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;9&lt;/span&gt;)), &lt;span class=&#34;dt&#34;&gt;name =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;degrees&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-56&#34;&gt;&lt;a href=&#34;#cb6-56&#34;&gt;&lt;/a&gt;                     &lt;span class=&#34;dt&#34;&gt;sec.axis =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;sec_axis&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;trans =&lt;/span&gt; &lt;span class=&#34;op&#34;&gt;~&lt;/span&gt;.&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-57&#34;&gt;&lt;a href=&#34;#cb6-57&#34;&gt;&lt;/a&gt;                                         &lt;span class=&#34;dt&#34;&gt;breaks =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;rep&lt;/span&gt;(&lt;span class=&#34;ot&#34;&gt;NA&lt;/span&gt;,&lt;span class=&#34;dv&#34;&gt;3&lt;/span&gt;), &lt;span class=&#34;kw&#34;&gt;seq&lt;/span&gt;(&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, (&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;*&lt;/span&gt;pi)&lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;2&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;length.out =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;9&lt;/span&gt;)),&lt;/span&gt;
+&lt;span id=&#34;cb6-58&#34;&gt;&lt;a href=&#34;#cb6-58&#34;&gt;&lt;/a&gt;                                         &lt;span class=&#34;dt&#34;&gt;labels =&lt;/span&gt;  &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;op&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, rad_labels),&lt;/span&gt;
+&lt;span id=&#34;cb6-59&#34;&gt;&lt;a href=&#34;#cb6-59&#34;&gt;&lt;/a&gt;                                         &lt;span class=&#34;dt&#34;&gt;name =&lt;/span&gt;   &lt;span class=&#34;st&#34;&gt;&amp;quot;radians&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-60&#34;&gt;&lt;a href=&#34;#cb6-60&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;labs&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;title =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Unit Circle - Sine and Cosine Functions&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-61&#34;&gt;&lt;a href=&#34;#cb6-61&#34;&gt;&lt;/a&gt;       &lt;span class=&#34;dt&#34;&gt;subtitle =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Sine and cosine can be generated by projecting the tip of a vector onto the y-axis and x-axis as the&lt;/span&gt;&lt;span class=&#34;ch&#34;&gt;\n&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; vector rotates about the origin.&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-62&#34;&gt;&lt;a href=&#34;#cb6-62&#34;&gt;&lt;/a&gt;       &lt;span class=&#34;dt&#34;&gt;caption =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;Created by @Mauricio_Cely&amp;quot;&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-63&#34;&gt;&lt;a href=&#34;#cb6-63&#34;&gt;&lt;/a&gt;       &lt;span class=&#34;dt&#34;&gt;y =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-64&#34;&gt;&lt;a href=&#34;#cb6-64&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_ipsum&lt;/span&gt;() &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-65&#34;&gt;&lt;a href=&#34;#cb6-65&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;plot.margin =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;margin&lt;/span&gt;(&lt;span class=&#34;op&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;1&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;-1&lt;/span&gt;, &lt;span class=&#34;dv&#34;&gt;0&lt;/span&gt;, &lt;span class=&#34;dt&#34;&gt;unit =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;cm&amp;quot;&lt;/span&gt;), &lt;/span&gt;
+&lt;span id=&#34;cb6-66&#34;&gt;&lt;a href=&#34;#cb6-66&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;plot.subtitle =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;element_text&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;face =&lt;/span&gt; &lt;span class=&#34;st&#34;&gt;&amp;quot;italic&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-67&#34;&gt;&lt;a href=&#34;#cb6-67&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;transition_reveal&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;along =&lt;/span&gt; frame)&lt;/span&gt;
+&lt;span id=&#34;cb6-68&#34;&gt;&lt;a href=&#34;#cb6-68&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-69&#34;&gt;&lt;a href=&#34;#cb6-69&#34;&gt;&lt;/a&gt;&lt;span class=&#34;co&#34;&gt;# options(gganimate.dev_args = list(res = 115))&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-70&#34;&gt;&lt;a href=&#34;#cb6-70&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-71&#34;&gt;&lt;a href=&#34;#cb6-71&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;animate&lt;/span&gt;(sine,&lt;/span&gt;
+&lt;span id=&#34;cb6-72&#34;&gt;&lt;a href=&#34;#cb6-72&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;width =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;1600&lt;/span&gt;, &lt;span class=&#34;co&#34;&gt;# 900px wide&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-73&#34;&gt;&lt;a href=&#34;#cb6-73&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;height =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;800&lt;/span&gt;, &lt;span class=&#34;co&#34;&gt;# 600px high&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-74&#34;&gt;&lt;a href=&#34;#cb6-74&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;duration =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;10&lt;/span&gt;,&lt;/span&gt;
+&lt;span id=&#34;cb6-75&#34;&gt;&lt;a href=&#34;#cb6-75&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;renderer =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;gifski_renderer&lt;/span&gt;(),&lt;/span&gt;
+&lt;span id=&#34;cb6-76&#34;&gt;&lt;a href=&#34;#cb6-76&#34;&gt;&lt;/a&gt;        &lt;span class=&#34;dt&#34;&gt;res =&lt;/span&gt; &lt;span class=&#34;dv&#34;&gt;200&lt;/span&gt;) &lt;span class=&#34;co&#34;&gt;# 10 frames per second&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-77&#34;&gt;&lt;a href=&#34;#cb6-77&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&#34;cb6-78&#34;&gt;&lt;a href=&#34;#cb6-78&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;anim_save&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;unit_circle.gif&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>COVID-19 en Bogotá</title>
+      <link>https://MauricioCely.github.io/es/project/dashboard_covid_bog/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://MauricioCely.github.io/es/project/dashboard_covid_bog/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
