@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ctrl &#43; Shift &#43; M</title>
+    <title>World %&gt;% science::discover</title>
     <link>https://MauricioCely.github.io/</link>
       <atom:link href="https://MauricioCely.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <description>Ctrl &#43; Shift &#43; M</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>Iván Mauricio Cely Toro - 2020</copyright><lastBuildDate>Sat, 01 Jun 2030 13:00:00 +0000</lastBuildDate>
+    <description>World %&gt;% science::discover</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>Iván Mauricio Cely Toro - 2021</copyright><lastBuildDate>Sat, 01 Jun 2030 13:00:00 +0000</lastBuildDate>
     <image>
       <url>https://MauricioCely.github.io/img/doc/avatar.jpg</url>
-      <title>Ctrl &#43; Shift &#43; M</title>
+      <title>World %&gt;% science::discover</title>
       <link>https://MauricioCely.github.io/</link>
     </image>
     
@@ -77,15 +77,27 @@
     </item>
     
     <item>
+      <title>In english 2021-01-14 \(\alpha\)</title>
+      <link>https://MauricioCely.github.io/blog/2021/01/09/in-english/</link>
+      <pubDate>Sat, 09 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>https://MauricioCely.github.io/blog/2021/01/09/in-english/</guid>
+      <description>
+
+
+
+</description>
+    </item>
+    
+    <item>
       <title>Estimating $\pi$ using the Monte Carlo Method.</title>
       <link>https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/</link>
       <pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
       <guid>https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/</guid>
       <description>
-&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;index_files/vembedr/css/vembedr.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/vembedr/css/vembedr.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -585,7 +597,7 @@ Figure 4: Animation of the relationship between the unit circle, sine and cosine
       <pubDate>Thu, 23 Jul 2020 00:00:00 +0000</pubDate>
       <guid>https://MauricioCely.github.io/blog/2020/07/23/welcome-to-my-website/</guid>
       <description>
-&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://MauricioCely.github.io/blog/2020/07/23/welcome-to-my-website/index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Hello everybody and welcome to my brand new website! First of all excuse me for the writing - English is not my native language - but if you have a question does not doubt to write me. I have started this blog to tackle through various concepts of Mathematics, Physics, Science and programming using &lt;i class=&#34;fab fa-r-project&#34; style=&#34;color:#4475a0&#34;&gt;&lt;/i&gt;. The idea is to share some of my knowledge I have about it hopefully it will be useful to you too.&lt;/p&gt;

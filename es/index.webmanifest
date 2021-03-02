@@ -1,9 +1,9 @@
 {
-  "name": "Ctrl &#43; Shift &#43; M",
-  "short_name": "Ctrl &#43; Shift &#43; M",
+  "name": "World %&gt;% science::discover",
+  "short_name": "World %&gt;% science::discover",
   "lang": "es-es",
-  "theme_color": "#06805E",
-  "background_color": "#06805E",
+  "theme_color": "#284b63",
+  "background_color": "#284b63",
   "icons": [{
     "src": "/images/icon_hu028d12a5677323d314b5a5abc52e9454_58229_192x192_fill_lanczos_center_2.png",
     "sizes": "192x192",

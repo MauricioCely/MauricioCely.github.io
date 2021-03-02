@@ -48,21 +48,6 @@
   </url>
   
   <url>
-    <loc>https://MauricioCely.github.io/es/</loc>
-    <lastmod>2030-06-01T13:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://MauricioCely.github.io/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es"
-                href="https://MauricioCely.github.io/es/"
-                />
-  </url>
-  
-  <url>
     <loc>https://MauricioCely.github.io/es/talk/example/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
     <xhtml:link
@@ -90,6 +75,41 @@
                 hreflang="es"
                 href="https://MauricioCely.github.io/es/talk/"
                 />
+  </url>
+  
+  <url>
+    <loc>https://MauricioCely.github.io/es/</loc>
+    <lastmod>2030-06-01T13:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://MauricioCely.github.io/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://MauricioCely.github.io/es/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://MauricioCely.github.io/es/blog/</loc>
+    <lastmod>2021-01-09T20:31:58-03:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://MauricioCely.github.io/blog/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://MauricioCely.github.io/es/blog/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://MauricioCely.github.io/es/blog/2021/01/09/test/</loc>
+    <lastmod>2021-01-09T20:31:58-03:00</lastmod>
   </url>
   
   <url>
@@ -139,21 +159,6 @@
                 rel="alternate"
                 hreflang="es"
                 href="https://MauricioCely.github.io/es/category/maths/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://MauricioCely.github.io/es/blog/</loc>
-    <lastmod>2020-10-18T16:38:36-03:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://MauricioCely.github.io/blog/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es"
-                href="https://MauricioCely.github.io/es/blog/"
                 />
   </url>
   

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Maths | Ctrl &#43; Shift &#43; M</title>
+    <title>Maths | World %&gt;% science::discover</title>
     <link>https://MauricioCely.github.io/category/maths/</link>
       <atom:link href="https://MauricioCely.github.io/category/maths/index.xml" rel="self" type="application/rss+xml" />
     <description>Maths</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>Iván Mauricio Cely Toro - 2020</copyright><lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>Iván Mauricio Cely Toro - 2021</copyright><lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://MauricioCely.github.io/img/doc/avatar.jpg</url>
       <title>Maths</title>
@@ -18,10 +18,10 @@
       <pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
       <guid>https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/</guid>
       <description>
-&lt;script src=&#34;index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;index_files/vembedr/css/vembedr.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/vembedr/css/vembedr.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://MauricioCely.github.io/blog/2020/08/05/estimating-pi-using-the-monte-carlo-method/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;

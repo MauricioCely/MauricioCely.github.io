@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Slides | Ctrl &#43; Shift &#43; M</title>
+    <title>Slides | World %&gt;% science::discover</title>
     <link>https://MauricioCely.github.io/es/slides/</link>
       <atom:link href="https://MauricioCely.github.io/es/slides/index.xml" rel="self" type="application/rss+xml" />
     <description>Slides</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>es-es</language><copyright>Iván Mauricio Cely Toro - 2020</copyright><lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>es-es</language><copyright>Iván Mauricio Cely Toro - 2021</copyright><lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate>
     <item>
       <title>Slides</title>
       <link>https://MauricioCely.github.io/es/slides/example/</link>
